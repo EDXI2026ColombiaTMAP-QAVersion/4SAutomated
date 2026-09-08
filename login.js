@@ -1,3 +1,5 @@
+const VALID_USERNAME = 'teamco';
+const VALID_PASSWORD = '2026teamcowlcteamco2026';
 const form = document.querySelector('#loginForm');
 const status = document.querySelector('#loginStatus');
 
@@ -7,12 +9,13 @@ form.addEventListener('submit', async event => {
   button.disabled = true;
   status.textContent = '';
   try {
-    const response = await fetch('/api/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(Object.fromEntries(new FormData(form)))
-    });
-    if (!response.ok) throw new Error('Invalid username or password.');
+    const formData = new FormData(form);
+    const username = formData.get('username');
+    const password = formData.get('password');
+    if (username !== VALID_USERNAME || password !== VALID_PASSWORD) {
+      throw new Error('Invalid username or password.');
+    }
+    sessionStorage.setItem('teamcoAuthenticated', 'true');
     const next = new URLSearchParams(location.search).get('next') || '/';
     location.assign(next.startsWith('/') ? next : '/');
   } catch (error) {

@@ -1,3 +1,7 @@
+if (sessionStorage.getItem('teamcoAuthenticated') !== 'true') {
+  location.replace('login.html');
+}
+
 let excelFile = null;
 const fileInput = document.querySelector('#excelFile');
 const fileName = document.querySelector('#fileName');
