@@ -319,9 +319,8 @@ async function updateGraphic3(zip, slideFile, slideXml, data, labels) {
   previousMonth.setMonth(previousMonth.getMonth() - 1);
   const monthIndex = previousMonth.getMonth();
   const monthRow = monthIndex + 2; // January is row 2
-  const chartXml = updateChartColors(
-    updateMonthlyChartCache(await zip.file(chartPath).async('string'), monthlyData, monthIndex),
-    labels
+  const chartXml = updateMonthlyChartCache(
+    await zip.file(chartPath).async('string'), monthlyData, monthIndex
   );
   zip.file(chartPath, updateMonthlyDataLabels(chartXml, monthIndex));
   const chartRels = await zip.file(chartPath.replace('ppt/charts/', 'ppt/charts/_rels/') + '.rels').async('string');
