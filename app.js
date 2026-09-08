@@ -400,16 +400,8 @@ function updateMonthlyDataLabels(xml, activeMonthIndex) {
       const indexMatch = label.match(/<c:idx\s+val="(\d+)"/);
       if (!indexMatch) return labelXml;
       const isActive = Number(indexMatch[1]) === activeMonthIndex;
-      let updated = label
-        .replace(/<c:delete\s+val="1"\s*\/>/g, '')
-        .replace(/<c:showVal\s+val="[01]"\s*\/>/g, '')
-        .replace(/<c:showCatName\s+val="[01]"\s*\/>/g, '')
-        .replace(/<c:showSerName\s+val="[01]"\s*\/>/g, '');
-      if (isActive) {
-        updated = updated.replace(/(<c:idx\s+val="\d+"\s*\/>)/, '$1<c:showVal val="1"/>');
-      } else {
-        updated = updated.replace(/(<c:idx\s+val="\d+"\s*\/>)/, '$1<c:delete val="1"/>');
-      }
+      let updated = label.replace(/<c:delete\s+val="1"\s*\/>/g, '');
+      if (!isActive) updated = updated.replace(/(<c:idx\s+val="\d+"\s*\/>)/, '$1<c:delete val="1"/>');
       return `<c:dLbl>${updated}</c:dLbl>`;
     });
     return `<c:dLbls>${updatedLabels}</c:dLbls>`;
