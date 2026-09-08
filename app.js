@@ -323,8 +323,7 @@ async function updateGraphic3(zip, slideFile, slideXml, data, labels) {
     await zip.file(chartPath).async('string'), monthlyData, monthIndex
   );
   // Graphic_3 conserva intacta la estructura de etiquetas de la plantilla.
-  // Solo se activa la etiqueta existente del mes actualizado.
-  zip.file(chartPath, activateMonthlyLabel(chartXml, monthIndex));
+  zip.file(chartPath, chartXml);
   const chartRels = await zip.file(chartPath.replace('ppt/charts/', 'ppt/charts/_rels/') + '.rels').async('string');
   const embed = chartRels.match(/Type="[^"]*package"[^>]*Target="([^"]+)"/);
   if (!embed) throw new Error('The embedded workbook for Graphic_3 was not found.');
@@ -362,25 +361,6 @@ function updateMonthlyChartCache(xml, data, monthIndex) {
       updated += `<c:pt idx="${monthIndex}"><c:v>${value}</c:v></c:pt>`;
     }
     return '<c:numCache>' + updated + '</c:numCache>';
-  });
-}
-
-function activateMonthlyLabel(xml, activeMonthIndex) {
-  return xml.replace(/<c:dLbl>([\s\S]*?)<\/c:dLbl>/g, (whole, label) => {
-    const index = label.match(/<c:idx\s+val="(\d+)"/);
-    if (!index) return whole;
-    const monthIndex = Number(index[1]);
-    if (monthIndex === activeMonthIndex) {
-      let updated = label.replace(/<c:delete\s+val="1"\s*\/>/g, '');
-      if (!/<c:showVal\b/.test(updated)) {
-        updated = updated.replace(/(<c:idx\s+val="\d+"\s*\/>)/, '$1<c:showVal val="1"/>');
-      }
-      return `<c:dLbl>${updated}</c:dLbl>`;
-    }
-    if (monthIndex === activeMonthIndex - 1 && !/<c:delete\s+val="1"\s*\/>/.test(label)) {
-      return `<c:dLbl>${label.replace(/(<c:idx\s+val="\d+"\s*\/>)/, '$1<c:delete val="1"/>')}</c:dLbl>`;
-    }
-    return whole;
   });
 }
 
