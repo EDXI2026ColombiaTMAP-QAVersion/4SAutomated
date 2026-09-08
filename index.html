@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>4SeasonsMonthly Automaded</title>
+  <link rel="stylesheet" href="styles.css?v=2">
+</head>
+<body>
+  <main class="card">
+    <div class="eyebrow">Team Colombia</div>
+    <h1>4SMonthly</h1>
+    <!-- <p class="intro">Upload the monthly Excel file and download the updated report section.</p> -->
+
+    <label class="upload" for="excelFile">
+      <span class="upload-title">Upload 4SeasonsMonthlyAutomated</span>
+      <span id="fileName">Select an .xlsm or .xlsx file</span>
+      <input id="excelFile" type="file" accept=".xlsm,.xlsx,application/vnd.ms-excel.sheet.macroEnabled.12,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+    </label>
+
+    <fieldset class="options">
+      <legend>Report type</legend>
+      <label class="option">
+        <input id="yachtsCheckbox" name="reportType" type="radio">
+        <span>Yachts</span>
+      </label>
+      <label class="option">
+        <input id="retailCheckbox" name="reportType" type="radio">
+        <span>Retail</span>
+      </label>
+    </fieldset>
+
+    <button id="yachtsButton" disabled>Generate Report</button>
+    <p id="status" class="status" aria-live="polite"></p>
+    <!-- <p class="hint">The PowerPoint template must be available next to this page as <code>Yachts Report Template.pptx</code>.</p> -->
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script src="app.js?v=5"></script>
+</body>
+</html>
