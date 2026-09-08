@@ -322,7 +322,9 @@ async function updateGraphic3(zip, slideFile, slideXml, data, labels) {
   const chartXml = updateMonthlyChartCache(
     await zip.file(chartPath).async('string'), monthlyData, monthIndex
   );
-  zip.file(chartPath, updateMonthlyDataLabels(chartXml, monthIndex));
+  // Graphic_3 conserva intacta la estructura de etiquetas de la plantilla.
+  // Solo se actualizan los datos para evitar que PowerPoint repare el archivo.
+  zip.file(chartPath, chartXml);
   const chartRels = await zip.file(chartPath.replace('ppt/charts/', 'ppt/charts/_rels/') + '.rels').async('string');
   const embed = chartRels.match(/Type="[^"]*package"[^>]*Target="([^"]+)"/);
   if (!embed) throw new Error('The embedded workbook for Graphic_3 was not found.');
@@ -390,20 +392,6 @@ function updateChartColors(xml, labels) {
     const color = index && HOTEL_COLORS[labels[Number(index[1])]];
     if (!color) return whole;
     return whole.replace(/(<c:spPr>[\s\S]*?<a:solidFill><a:srgbClr\s+val=")[^"]+/, `$1${color}`);
-  });
-}
-
-function updateMonthlyDataLabels(xml, activeMonthIndex) {
-  return xml.replace(/<c:dLbls>([\s\S]*?)<\/c:dLbls>/g, (whole, labelsXml) => {
-    const updatedLabels = labelsXml.replace(/<c:dLbl>([\s\S]*?)<\/c:dLbl>/g, (labelXml, label) => {
-      const indexMatch = label.match(/<c:idx\s+val="(\d+)"/);
-      if (!indexMatch) return labelXml;
-      const isActive = Number(indexMatch[1]) === activeMonthIndex;
-      let updated = label.replace(/<c:delete\s+val="1"\s*\/>/g, '');
-      if (!isActive) updated = updated.replace(/(<c:idx\s+val="\d+"\s*\/>)/, '$1<c:delete val="1"/>');
-      return `<c:dLbl>${updated}</c:dLbl>`;
-    });
-    return `<c:dLbls>${updatedLabels}</c:dLbls>`;
   });
 }
 
